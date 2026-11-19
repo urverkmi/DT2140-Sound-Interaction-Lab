@@ -12,7 +12,7 @@ let dspNodeParams = null;
 let jsonParams = null;
 
 // Change here to ("tuono") depending on your wasm file name
-const dspName = "brass";
+const dspName = "insects";
 const instance = new FaustWasm2ScriptProcessor(dspName);
 
 // output to window or npm package module
@@ -25,7 +25,7 @@ if (typeof module === "undefined") {
 }
 
 // The name should be the same as the WASM file, so change tuono with brass if you use brass.wasm
-brass.createDSP(audioContext, 1024)
+insects.createDSP(audioContext, 1024)
     .then(node => {
         dspNode = node;
         dspNode.connect(audioContext.destination);
@@ -50,31 +50,33 @@ brass.createDSP(audioContext, 1024)
 //------------------------------------------------------------------------------------------
 //
 //==========================================================================================
+playDefaultAudio()
 
 function accelerationChange(accx, accy, accz) {
-    // playAudio()
+    const mag = Math.hypot(accx, accy, accz);
+    playAcceleratedAudio(mag)
 }
 
 function rotationChange(rotx, roty, rotz) {
 }
 
 function mousePressed() {
-    playAudio(mouseX/windowWidth)
+    // playAcceleratedAudio(3)
     // Use this for debugging from the desktop!
 }
 
 function deviceMoved() {
-    movetimer = millis();
-    statusLabels[2].style("color", "pink");
+    // movetimer = millis();
+    // statusLabels[2].style("color", "pink");
 }
 
 function deviceTurned() {
-    threshVals[1] = turnAxis;
+    // threshVals[1] = turnAxis;
 }
 function deviceShaken() {
-    shaketimer = millis();
-    statusLabels[0].style("color", "pink");
-    playAudio();
+    // shaketimer = millis();
+    // statusLabels[0].style("color", "pink");
+    // playAudio();
 }
 
 function getMinMaxParam(address) {
@@ -95,15 +97,28 @@ function getMinMaxParam(address) {
 //
 //==========================================================================================
 
-function playAudio(pressure) {
+function playDefaultAudio() {
     if (!dspNode) {
         return;
     }
     if (audioContext.state === 'suspended') {
         return;
     }
-    console.log(pressure)
-    dspNode.setParamValue("/brass/blower/pressure", pressure)
+    dspNode.setParamValue("/insects/gain", 1)
+}
+
+function playAcceleratedAudio(acc) {
+    if (!dspNode) {
+        return;
+    }
+    if (audioContext.state === 'suspended') {
+        return;
+    } 
+    // 3 (0.1) --> 0 (1)
+    const out = 0.1 + (3 - acc) * 0.45;
+    dspNode.setParamValue("/insects/gain", out)
+    setTimeout(() => { dspNode.setParamValue("/insects/gain", 1) }, 3000);
+
 }
 
 //==========================================================================================
