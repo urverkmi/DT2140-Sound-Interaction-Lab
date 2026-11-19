@@ -12,7 +12,7 @@ let dspNodeParams = null;
 let jsonParams = null;
 
 // Change here to ("tuono") depending on your wasm file name
-const dspName = "bells";
+const dspName = "engine";
 const instance = new FaustWasm2ScriptProcessor(dspName);
 
 // output to window or npm package module
@@ -25,7 +25,7 @@ if (typeof module === "undefined") {
 }
 
 // The name should be the same as the WASM file, so change tuono with brass if you use brass.wasm
-bells.createDSP(audioContext, 1024)
+engine.createDSP(audioContext, 1024)
     .then(node => {
         dspNode = node;
         dspNode.connect(audioContext.destination);
@@ -56,11 +56,14 @@ function accelerationChange(accx, accy, accz) {
 }
 
 function rotationChange(rotx, roty, rotz) {
+    playAudio(roty)
 }
 
 function mousePressed() {
     // playAudio()
     // Use this for debugging from the desktop!
+    // playAudio(45)
+
 }
 
 function deviceMoved() {
@@ -95,15 +98,15 @@ function getMinMaxParam(address) {
 //
 //==========================================================================================
 
-function playAudio() {
+function playAudio(roty) {
     if (!dspNode) {
         return;
     }
     if (audioContext.state === 'suspended') {
         return;
     }
-    dspNode.setParamValue("/englishBell/gate", 1)
-    setTimeout(() => { dspNode.setParamValue("/englishBell/gate", 0) }, 100);
+    dspNode.setParamValue("/engine/tubeRes", roty/90.0)
+    setTimeout(() => { dspNode.setParamValue("/engine/tubeRes", 0) }, 3000);
 }
 
 //==========================================================================================
