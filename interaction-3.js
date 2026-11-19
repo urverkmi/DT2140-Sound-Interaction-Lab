@@ -114,10 +114,10 @@ function playAcceleratedAudio(acc) {
     if (audioContext.state === 'suspended') {
         return;
     } 
-    // 3 (0.1) --> 0 (1)
-    const out = 0.1 + (3 - acc) * 0.45;
+    // magnitude 1 → gain 1, magnitude 3 (or more) → gain 0.1
+    const capped = Math.min(3, Math.max(0, acc));   // keep acc within 1–3
+    const out = 0.1 + (3 - capped) * 0.45;           // always 0.1–1
     dspNode.setParamValue("/insects/gain", out)
-    setTimeout(() => { dspNode.setParamValue("/insects/gain", 1) }, 3000);
 
 }
 
