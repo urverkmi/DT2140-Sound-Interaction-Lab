@@ -67,17 +67,17 @@ function mousePressed() {
 }
 
 function deviceMoved() {
-    movetimer = millis();
-    statusLabels[2].style("color", "pink");
+    // movetimer = millis();
+    // statusLabels[2].style("color", "pink");
 }
 
 function deviceTurned() {
-    threshVals[1] = turnAxis;
+    // threshVals[1] = turnAxis;
 }
 function deviceShaken() {
-    shaketimer = millis();
-    statusLabels[0].style("color", "pink");
-    playAudio();
+    // shaketimer = millis();
+    // statusLabels[0].style("color", "pink");
+    // playAudio();
 }
 
 function getMinMaxParam(address) {
@@ -105,8 +105,9 @@ function playAudio(roty) {
     if (audioContext.state === 'suspended') {
         return;
     }
+    dspNode.setParamValue("/engine/gate", 1)
     dspNode.setParamValue("/engine/tubeRes", roty/90.0)
-    setTimeout(() => { dspNode.setParamValue("/engine/tubeRes", 0) }, 3000);
+    setTimeout(() => { dspNode.setParamValue("/engine/tubeRes", 0) }, 10000);
 }
 
 //==========================================================================================
